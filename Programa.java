@@ -4,49 +4,81 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Programa {
-    public static void main(String[] args) {
+/**
+ * Classe principal do programa para gerenciar alunos e calcular médias.
+ */
+public final class Programa {
+
+    /** Nota mínima para aprovação. */
+    private static final double NOTA_MINIMA = 7.0;
+
+    /** Primeira nota do primeiro aluno. */
+    private static final double NOTA1_ALUNO1 = 7.0;
+
+    /** Segunda nota do primeiro aluno. */
+    private static final double NOTA2_ALUNO1 = 8.0;
+
+    /** Primeira nota do segundo aluno. */
+    private static final double NOTA1_ALUNO2 = 6.0;
+
+    /** Segunda nota do segundo aluno. */
+    private static final double NOTA2_ALUNO2 = 7.0;
+
+    /** Primeira nota do terceiro aluno. */
+    private static final double NOTA1_ALUNO3 = 5.0;
+
+    /** Segunda nota do terceiro aluno. */
+    private static final double NOTA2_ALUNO3 = 6.5;
+
+    /**
+     * Construtor privado para evitar instâncias desta classe utilitária.
+     */
+    private Programa() {
+        throw new UnsupportedOperationException(
+                "Esta é uma classe utilitária e não deve ser instanciada."
+        );
+    }
+
+    /**
+     * Método principal que executa o programa.
+     *
+     * @param args Argumentos da linha de comando (não utilizado).
+     */
+    public static void main(final String[] args) {
         Scanner scanner = new Scanner(System.in);
-        List<Aluno> listaAlunos = new ArrayList<Aluno>();
+        List<Aluno> listaAlunos = new ArrayList<>();
 
-        Aluno aluno1 = new Aluno(7.0, 8.0);
-        Aluno aluno2 = new Aluno(6.0, 7.0);
+        // Adicionando alunos à lista
+        listaAlunos.add(new Aluno(NOTA1_ALUNO1, NOTA2_ALUNO1));
+        listaAlunos.add(new Aluno(NOTA1_ALUNO2, NOTA2_ALUNO2));
+        listaAlunos.add(new Aluno(NOTA1_ALUNO3, NOTA2_ALUNO3));
 
+        for (Aluno aluno : listaAlunos) {
+            double media = aluno.calcularMedia();
+            System.out.println("Aluno com AP1: " + aluno.getAp1()
+                    + ", AP2: " + aluno.getAp2());
+            System.out.printf("Média inicial: %.2f%n", media);
 
-        listaAlunos.add(aluno1);
-        listaAlunos.add(aluno2);
-        for(Aluno aluno: listaAlunos)   {
-            double media = (aluno.getAp1() + aluno.getAp2()) / 2;
-            if (media < 7 ) {
-                System.out.println("Aluno precisa de uma terceira nota.");
-                System.out.println("Digite uma terceira nota para o aluno: ");
+            if (media < NOTA_MINIMA) {
+                System.out.println(
+                        "Aluno precisa de avaliação substitutiva (AS)."
+                                + " Digite a nota:"
+                );
                 double as = scanner.nextDouble();
-                double As = aluno.setAs(as);
-                double ap1 = aluno.getAp1();
-                double ap2 = aluno.getAp2();
-                double As = aluno.getAs();
+                aluno.aplicarSubstitutiva(as);
 
-                if (As > ap1 && As < ap2) {
-                    media = (As + ap2) / 2;
-                    System.out.println("passou aqui");
-                }
-                else if (As > ap2 && As < ap1) {
-                    media = (As + ap1) / 2;
-                }
-                else if (As > ap1 && ap1 == ap2) {
-                    media = (As + ap1) / 2;
-                }
-                if (media < 7) {
-                    System.out.println("Aluno reprovado");
-                }
-                else {
-                    System.out.println("Aluno aprovado");
-                }
-            }
-            else {
-                System.out.println("O aluno foi aprovado.");
+                media = aluno.calcularMedia();
+                System.out.printf("Nova média após AS: %.2f%n", media);
             }
 
+            if (media >= NOTA_MINIMA) {
+                System.out.println("Aluno aprovado!");
+            } else {
+                System.out.println("Aluno reprovado.");
+            }
+            System.out.println("----------------------------");
         }
+
+        scanner.close();
     }
 }
